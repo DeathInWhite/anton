@@ -6,6 +6,8 @@ import playsound
 import os
 import random
 from gtts import gTTS
+from clases.python import Python
+from sys import exit
 
 r = sr.Recognizer()
 
@@ -20,9 +22,9 @@ def record_audio(ask = False):
         try:
             voice_data = r.recognize_google(audio,language="es-ES")
         except sr.UnknownValueError:
-            anton_speak("Sorry, I Did not get that")
+            anton_speak("No te entiendo, habla mas claro")
         except sr.RequestError:
-            anton_speak("Sorry, my speech service is down")
+            anton_speak("Creo que mi servicio se cayo, encargate solo")
         
         return voice_data
 
@@ -30,20 +32,32 @@ def record_audio(ask = False):
 def respond(voice_data):
     if 'Cuál es tu nombre' in voice_data:
         anton_speak("Que te importa ahueonao")
+        
     if 'qué hora es' in voice_data:
         anton_speak(ctime())
+        
     if 'busca' in voice_data:
         busqueda = record_audio('Que es lo que quieres que busque por ti weon flojo?')
         url = 'https://google.com/search?q='+busqueda
         webbrowser.get().open(url)
         anton_speak('esto es lo que encontre de la busqueda' + busqueda)
+        
     if 'encuentra un lugar' in voice_data:
         busqueda = record_audio('Que lugar quieres buscar?')
         url = 'https://google.nl/maps/place/'+busqueda+'/&amp'
         webbrowser.get().open(url)
         anton_speak('esto encontre por tu busqueda de '+ busqueda)
+        
     if 'termina' in voice_data:
+        anton_speak('nos vemos')
         exit()
+        
+    if 'Cómo' in voice_data:
+        if 'python' in voice_data:
+            python = Python()
+            tipo_respuesta = record_audio('Quieres que te explique con palabras o solo te envio la info')
+            time.sleep(1)
+            anton_speak(python.recibiendo_pregunta(voice_data,tipo_respuesta))
     
 
 def anton_speak(audio_string):
@@ -57,7 +71,7 @@ def anton_speak(audio_string):
 
 
 time.sleep(1)
-anton_speak("Que huea quieres ahora??")
+anton_speak("Hola")
 
 while 1:
     voice_data = record_audio()
